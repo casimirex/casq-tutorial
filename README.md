@@ -102,6 +102,7 @@ code lives in [`examples/`](./examples).
 | 17 | [Quantum error correction](lessons/17-error-correction.md) | `17_error_correction` | Steane/Shor codes, syndromes, logical qubits |
 | 18 | [Noise & the NISQ reality](lessons/18-noise.md) | `18_noise` | Noise channels, device T1/T2, why circuits stay shallow |
 | 19 | [BB84 quantum key distribution](lessons/19-bb84.md) | `19_bb84` | Detectable eavesdropping and quantum-secure keys |
+| 20 | [Simulating noise (density matrix)](lessons/20-noise-simulation.md) | `20_noise_simulation` | Run circuits under noise; purity & fidelity |
 
 ## A one-minute concepts primer
 
