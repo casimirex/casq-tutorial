@@ -1,5 +1,10 @@
 /target
 Cargo.lock
 
+# Secrets / local environment — never commit.
+.env
+.env.local
+.env.*.local
+
 # The source reference book is copyrighted — never commit it.
 *.pdf
