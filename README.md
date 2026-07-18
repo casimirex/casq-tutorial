@@ -94,6 +94,15 @@ code lives in [`examples/`](./examples).
 | 14 | [QAOA](lessons/14-qaoa.md) | `14_qaoa` | Near-term quantum optimization (MaxCut) |
 | 15 | [Capstone: your first quantum app](lessons/15-capstone.md) | `15_capstone` | Circuits + persistence + algorithms, end to end |
 
+### Part V — Advanced & real-world (expert)
+
+| # | Lesson | Example | You'll learn |
+| --- | --- | --- | --- |
+| 16 | [Quantum machine learning](lessons/16-quantum-ml.md) | `16_quantum_ml` | Quantum kernels (QSVM) and variational models |
+| 17 | [Quantum error correction](lessons/17-error-correction.md) | `17_error_correction` | Steane/Shor codes, syndromes, logical qubits |
+| 18 | [Noise & the NISQ reality](lessons/18-noise.md) | `18_noise` | Noise channels, device T1/T2, why circuits stay shallow |
+| 19 | [BB84 quantum key distribution](lessons/19-bb84.md) | `19_bb84` | Detectable eavesdropping and quantum-secure keys |
+
 ## A one-minute concepts primer
 
 - **Qubit** — a two-level quantum system. Its state is `α|0> + β|1>` with
