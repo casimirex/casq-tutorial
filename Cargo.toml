@@ -1,0 +1,11 @@
+[package]
+name = "casq-tutorial"
+version = "0.1.0"
+edition = "2021"
+description = "A novice-to-professional quantum computing tutorial built on the casq-sdk"
+license = "MIT"
+publish = false
+
+[dependencies]
+casq-sdk = { path = "../casq-sdk" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
