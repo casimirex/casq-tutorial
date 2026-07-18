@@ -103,6 +103,7 @@ code lives in [`examples/`](./examples).
 | 18 | [Noise & the NISQ reality](lessons/18-noise.md) | `18_noise` | Noise channels, device T1/T2, why circuits stay shallow |
 | 19 | [BB84 quantum key distribution](lessons/19-bb84.md) | `19_bb84` | Detectable eavesdropping and quantum-secure keys |
 | 20 | [Simulating noise (density matrix)](lessons/20-noise-simulation.md) | `20_noise_simulation` | Run circuits under noise; purity & fidelity |
+| 21 | [Choosing a backend](lessons/21-backends.md) | `21_backends` | Run the same circuit on simulators vs an emulated QPU |
 
 ## A one-minute concepts primer
 
