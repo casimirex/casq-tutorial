@@ -118,6 +118,12 @@ code lives in [`examples/`](./examples).
 
 Ready? Start with [Lesson 1](lessons/01-hello-quantum.md).
 
+## Related
+
+- [casq-sdk](../casq-sdk) — the Rust client every lesson is built on.
+- [casimirQ](../casimirQ) — the quantum simulation platform behind the SDK.
+- [Ecosystem roadmap](../casimirQ/ROADMAP.md) — where the platform, SDK, and tutorial are headed.
+
 ## License
 
 MIT
