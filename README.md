@@ -105,6 +105,7 @@ code lives in [`examples/`](./examples).
 | 20 | [Simulating noise (density matrix)](lessons/20-noise-simulation.md) | `20_noise_simulation` | Run circuits under noise; purity & fidelity |
 | 21 | [Choosing a backend](lessons/21-backends.md) | `21_backends` | Run the same circuit on simulators vs an emulated QPU |
 | 22 | [Asynchronous execution](lessons/22-async-jobs.md) | `22_async_jobs` | Submit jobs, poll to completion, target any backend |
+| 23 | [Transpilation](lessons/23-transpilation.md) | `23_transpilation` | Decompose circuits to a native gate basis; the gate-count cost |
 
 ## A one-minute concepts primer
 
