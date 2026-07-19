@@ -107,6 +107,12 @@ code lives in [`examples/`](./examples).
 | 22 | [Asynchronous execution](lessons/22-async-jobs.md) | `22_async_jobs` | Submit jobs, poll to completion, target any backend |
 | 23 | [Transpilation](lessons/23-transpilation.md) | `23_transpilation` | Decompose circuits to a native gate basis; the gate-count cost |
 
+### Reference
+
+| # | Lesson | Example | You'll learn |
+| --- | --- | --- | --- |
+| 24 | [Multi-qubit gates](lessons/24-multi-qubit-gates.md) | `24_multi_qubit_gates` | CNOT, CZ, SWAP, Toffoli, Fredkin — the coupling gates in one place (companion to Lesson 3) |
+
 ## A one-minute concepts primer
 
 - **Qubit** — a two-level quantum system. Its state is `α|0> + β|1>` with

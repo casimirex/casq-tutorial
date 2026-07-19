@@ -160,4 +160,5 @@ device can *run*. It's exact but not free: the gate-count blow-up it exposes is
 exactly what makes deep circuits hard on real, noisy hardware — and why
 shallow, hardware-aware algorithm design matters.
 
-Back to the [overview](../README.md).
+Next: [Lesson 24 — Multi-qubit gates](24-multi-qubit-gates.md) · or back to the
+[overview](../README.md).
