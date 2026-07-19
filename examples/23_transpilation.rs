@@ -10,6 +10,7 @@
 
 use casq_sdk::Circuit;
 use casq_tutorial::{connect, print_histogram};
+use std::f64::consts::PI;
 
 #[tokio::main]
 async fn main() -> casq_sdk::Result<()> {
@@ -34,15 +35,31 @@ async fn main() -> casq_sdk::Result<()> {
     let mut toffoli = Circuit::new(3);
     toffoli.x(0).x(1).ccx(0, 1, 2);
     let t = client.transpile(&toffoli).await?;
-    use std::collections::BTreeMap;
-    let mut histogram: BTreeMap<&str, usize> = BTreeMap::new();
-    for op in &t.operations {
-        *histogram.entry(op.gate.as_str()).or_default() += 1;
-    }
     println!("\nToffoli circuit:");
-    println!("  {} gates -> {} native gates {:?}", t.original_gate_count, t.transpiled_gate_count, histogram);
+    println!("  {} gates -> {} native gates {:?}", t.original_gate_count, t.transpiled_gate_count, gate_histogram(&t));
+
+    // QFT: built from Hadamards and *controlled-phase* rotations. Controlled
+    // phase is what a Fourier transform is made of — and the transpiler now
+    // decomposes it, so a real QFT comes back fully native.
+    let mut qft = Circuit::new(3);
+    qft.h(0).cp(1, 0, PI / 2.0).cp(2, 0, PI / 4.0);
+    qft.h(1).cp(2, 1, PI / 2.0);
+    qft.h(2).swap(0, 2);
+    let t = client.transpile(&qft).await?;
+    println!("\n3-qubit QFT:");
+    println!("  {} gates -> {} native gates {:?}", t.original_gate_count, t.transpiled_gate_count, gate_histogram(&t));
+    println!("  fully native: {}   (controlled-phase decomposed to rz/ry/cx)", t.fully_native);
 
     println!("\nThe rewrite is exact but costs gates — one Toffoli becomes ~20 native");
     println!("operations. On noisy hardware, that gate-count blow-up is the enemy.");
     Ok(())
+}
+
+/// Count native operations by gate name.
+fn gate_histogram(t: &casq_sdk::TranspileResult) -> std::collections::BTreeMap<&str, usize> {
+    let mut histogram = std::collections::BTreeMap::new();
+    for op in &t.operations {
+        *histogram.entry(op.gate.as_str()).or_default() += 1;
+    }
+    histogram
 }

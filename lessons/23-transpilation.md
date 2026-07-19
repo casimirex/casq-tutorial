@@ -20,7 +20,14 @@ casimirQ transpiles to the basis `{rz, ry, cx}`:
 
 - Any single-qubit gate → a few `rz`/`ry` rotations (a general Euler
   decomposition).
-- `cx` is native; `cz`, `swap`, and the Toffoli decompose into `cx` + rotations.
+- Any *singly-controlled* gate — `cx`, `cy`, `cz`, `ch`, `cp`, `crx`/`cry`/`crz`,
+  or an arbitrary controlled-U — decomposes into two `cx` plus rotations (the
+  standard "ABC" identity). `cx` and `cz` keep hand-optimized fast paths.
+- `swap` and the Toffoli decompose into `cx` + rotations.
+
+Controlled-**phase** matters especially: it's the building block of the Quantum
+Fourier Transform (Lesson 10). Because the transpiler decomposes `cp`, a full
+QFT comes back **fully native** — ready for hardware.
 
 ## The code
 
@@ -46,21 +53,29 @@ Bell state:
 
 Toffoli circuit:
   3 gates -> 23 native gates {cx: 6, ry: 4, rz: 13}
+
+3-qubit QFT:
+  7 gates -> 24 native gates {cx: 9, ry: 3, rz: 12}
+  fully native: true   (controlled-phase decomposed to rz/ry/cx)
 ```
 
 The Bell circuit's Hadamard becomes two rotations, and the transpiled circuit
 **still measures as a Bell state** — the rewrite preserved the computation. The
-Toffoli, a single 3-qubit gate, explodes into ~20 native operations. That is the
-real cost hardware pays for a "simple" gate.
+Toffoli, a single 3-qubit gate, explodes into ~20 native operations. And the QFT
+— built from controlled-phase rotations — comes back **fully native**: every
+`cp` was decomposed into `cx` + rotations. That is the real cost hardware pays
+for a "simple" gate.
 
 ## Try it yourself
 
 1. Transpile a GHZ preset. How does the native gate count scale with the number
    of qubits?
-2. Transpile a circuit with a `cp` (controlled-phase) gate. It comes back
-   `fully_native: false` with `cp` in `unsupported` — decomposing controlled-
-   phase is the transpiler's next frontier.
-3. Compare `transpiled_gate_count` for a circuit of Hadamards vs the same number
+2. Build a larger QFT (4–5 qubits) and transpile it. Count the `cx` gates — this
+   is exactly the two-qubit-gate budget that limits QFT depth on real hardware.
+3. Transpile a circuit with a `cswap` (Fredkin) gate. It still comes back
+   `fully_native: false` with `cswap` in `unsupported` — controlled-SWAP and
+   multi-controlled gates beyond the Toffoli are the transpiler's next frontier.
+4. Compare `transpiled_gate_count` for a circuit of Hadamards vs the same number
    of `cx` gates. Which "costs" more to run natively, and why?
 
 ## Key takeaway
