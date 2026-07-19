@@ -105,6 +105,36 @@ whole research area. Second, routing **permutes your qubits**: the
 read a measurement, you look up each logical qubit's bit at
 `final_permutation[logical]` — the SDK reports the layout so you always can.
 
+### A smarter starting point
+
+Notice we *started* with logical qubit `i` on physical qubit `i` and only then
+scrambled to fix it. But we got to choose where qubits begin. If we place the
+two qubits that interact — 0 and 2 — on **adjacent** wires from the start, the
+gate needs no SWAP at all. That choice is the **initial layout**, and
+`Layout::Greedy` picks one by seating frequently-interacting qubits close
+together:
+
+```rust
+use casq_sdk::{Connectivity, Layout, TranspileOptions};
+
+let opts = TranspileOptions::connectivity(Connectivity::Linear).with_layout(Layout::Greedy);
+let t = client.transpile_with(&c, opts).await?;
+println!("initial layout: {:?}", t.initial_layout.unwrap());
+println!("swaps: {}", t.swap_count.unwrap());
+```
+
+```
+Same circuit with a greedy initial layout:
+  initial layout (logical -> physical): [1, 2, 0]
+  inserted 0 SWAP(s)  <- fewer, because 0 and 2 start adjacent
+```
+
+The layout `[1, 2, 0]` puts logical qubit 0 on physical wire 1 and logical qubit
+2 on physical wire 0 — neighbors — so the `cx(0, 2)` runs directly and **one
+SWAP becomes zero**. Choosing a good starting layout is one of the highest-
+leverage things a transpiler does; the greedy heuristic here is a first step,
+not the last word (it's not guaranteed optimal), which is why it's opt-in.
+
 ## Try it yourself
 
 1. Transpile a GHZ preset. How does the native gate count scale with the number

@@ -53,7 +53,7 @@ async fn main() -> casq_sdk::Result<()> {
     // Routing: a real device only couples *neighboring* qubits. On a line
     // 0—1—2, a gate between 0 and 2 can't run as written — routing inserts a
     // SWAP to bring them adjacent, and reports where each qubit ended up.
-    use casq_sdk::{Connectivity, TranspileOptions};
+    use casq_sdk::{Connectivity, Layout, TranspileOptions};
     let mut wide = Circuit::new(3);
     wide.h(0).cx(0, 2); // 0 and 2 are not adjacent on a line
     let t = client
@@ -63,6 +63,18 @@ async fn main() -> casq_sdk::Result<()> {
     println!("  inserted {} SWAP(s)", t.swap_count.unwrap_or(0));
     println!("  final layout (logical -> physical): {:?}", t.final_permutation.unwrap_or_default());
     println!("  every 2-qubit gate is now between neighbors, still native: {}", t.fully_native);
+
+    // A smarter initial layout can avoid the SWAP entirely: place the two
+    // interacting qubits on adjacent wires from the start.
+    let greedy = client
+        .transpile_with(
+            &wide,
+            TranspileOptions::connectivity(Connectivity::Linear).with_layout(Layout::Greedy),
+        )
+        .await?;
+    println!("\nSame circuit with a greedy initial layout:");
+    println!("  initial layout (logical -> physical): {:?}", greedy.initial_layout.clone().unwrap_or_default());
+    println!("  inserted {} SWAP(s)  <- fewer, because 0 and 2 start adjacent", greedy.swap_count.unwrap_or(0));
 
     println!("\nThe rewrite is exact but costs gates — one Toffoli becomes ~20 native");
     println!("operations, and routing adds SWAPs on top. On noisy hardware, that");
