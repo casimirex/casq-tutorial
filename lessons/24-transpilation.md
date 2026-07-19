@@ -136,6 +136,38 @@ SWAP becomes zero**. Choosing a good starting layout is one of the highest-
 leverage things a transpiler does; the greedy heuristic here is a first step,
 not the last word (it's not guaranteed optimal), which is why it's opt-in.
 
+### Looking ahead: the SABRE router
+
+Even with a fixed starting layout, *how* you insert SWAPs matters. The default
+router handles each gate on its own — it walks one operand to the other, which
+can shove a qubit away from where the **next** gate needs it. `Router::Sabre`
+(a well-known heuristic) looks ahead over a window of upcoming gates and picks
+the SWAP that helps the most of them at once.
+
+```rust
+use casq_sdk::{Connectivity, Router, TranspileOptions};
+
+// On a line, cx(0,2) then cx(0,1): greedy moves q2 (2 SWAPs); SABRE looks ahead,
+// moves q0 instead, and both gates run after just 1 SWAP.
+let mut c = Circuit::new(3);
+c.h(0).cx(0, 2).cx(0, 1);
+
+let greedy = client
+    .transpile_with(&c, TranspileOptions::connectivity(Connectivity::Linear))
+    .await?;
+let sabre = client
+    .transpile_with(
+        &c,
+        TranspileOptions::connectivity(Connectivity::Linear).with_router(Router::Sabre),
+    )
+    .await?;
+println!("greedy: {} SWAPs, sabre: {} SWAPs",
+    greedy.swap_count.unwrap(), sabre.swap_count.unwrap()); // 2 vs 1
+```
+
+Fewer SWAPs means a shallower circuit and less noise — which is the whole point
+of transpiling well.
+
 ## Try it yourself
 
 1. Transpile a GHZ preset. How does the native gate count scale with the number
@@ -152,6 +184,9 @@ not the last word (it's not guaranteed optimal), which is why it's opt-in.
    expensive on real hardware.
 5. Compare `transpiled_gate_count` for a circuit of Hadamards vs the same number
    of `cx` gates. Which "costs" more to run natively, and why?
+6. Route a 4–5 qubit QFT with the default router and again with `Router::Sabre`,
+   and compare `swap_count`. Where the lookahead helps depends on the circuit —
+   find a case where it wins big, and one where the two tie.
 
 ## Key takeaway
 

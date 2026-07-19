@@ -53,7 +53,7 @@ async fn main() -> casq_sdk::Result<()> {
     // Routing: a real device only couples *neighboring* qubits. On a line
     // 0—1—2, a gate between 0 and 2 can't run as written — routing inserts a
     // SWAP to bring them adjacent, and reports where each qubit ended up.
-    use casq_sdk::{Connectivity, Layout, TranspileOptions};
+    use casq_sdk::{Connectivity, Layout, Router, TranspileOptions};
     let mut wide = Circuit::new(3);
     wide.h(0).cx(0, 2); // 0 and 2 are not adjacent on a line
     let t = client
@@ -75,6 +75,23 @@ async fn main() -> casq_sdk::Result<()> {
     println!("\nSame circuit with a greedy initial layout:");
     println!("  initial layout (logical -> physical): {:?}", greedy.initial_layout.clone().unwrap_or_default());
     println!("  inserted {} SWAP(s)  <- fewer, because 0 and 2 start adjacent", greedy.swap_count.unwrap_or(0));
+
+    // A smarter *router*: with cx(0,2) then cx(0,1), the default greedy router
+    // moves q2 (2 SWAPs); SABRE looks ahead and moves q0 instead (1 SWAP).
+    let mut two = Circuit::new(3);
+    two.h(0).cx(0, 2).cx(0, 1);
+    let g = client
+        .transpile_with(&two, TranspileOptions::connectivity(Connectivity::Linear))
+        .await?;
+    let s = client
+        .transpile_with(
+            &two,
+            TranspileOptions::connectivity(Connectivity::Linear).with_router(Router::Sabre),
+        )
+        .await?;
+    println!("\ncx(0,2) then cx(0,1) on a line — greedy vs SABRE router:");
+    println!("  greedy: {} SWAP(s)   sabre: {} SWAP(s)  <- lookahead wins",
+        g.swap_count.unwrap_or(0), s.swap_count.unwrap_or(0));
 
     println!("\nThe rewrite is exact but costs gates — one Toffoli becomes ~20 native");
     println!("operations, and routing adds SWAPs on top. On noisy hardware, that");
