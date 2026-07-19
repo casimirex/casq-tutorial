@@ -82,6 +82,18 @@ async fn main() -> casq_sdk::Result<()> {
     fredkin_off.x(1).cswap(0, 1, 2);
     show!("CSWAP |010> -> |010>  (control q0=0 -> no swap):", fredkin_off);
 
+    // --- Beyond two controls: multi-controlled gates ---
+    // mcx generalizes CNOT/Toffoli to *any* number of controls: flip the target
+    // iff all controls are set. Here 3 controls, all set -> the target flips.
+    let mut mcx = Circuit::new(4);
+    mcx.x(0).x(1).x(2).mcx(&[0, 1, 2], 3);
+    show!("MCX   |0111> -> |1111>  (3 controls all set -> flip q3):", mcx);
+
+    // One control short -> no flip.
+    let mut mcx_short = Circuit::new(4);
+    mcx_short.x(0).x(1).mcx(&[0, 1, 2], 3);
+    show!("MCX   |0011> -> |0011>  (a control unset -> no flip):", mcx_short);
+
     println!("CNOT and CZ are the two-qubit workhorses; SWAP moves data; Toffoli and");
     println!("Fredkin are reversible AND / controlled-swap — enough to build *any*");
     println!("classical logic, reversibly. Lesson 24 showed how hardware decomposes");

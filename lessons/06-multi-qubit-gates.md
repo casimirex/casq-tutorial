@@ -71,6 +71,21 @@ let mut c = Circuit::new(3);
 c.x(0).x(1).cswap(0, 1, 2); // control q0=1 -> swap q1,q2:  |011> -> |101>
 ```
 
+### Multi-controlled gates (`mcx`, `mcz`, `ccz`)
+The controls don't stop at two. **`mcx`** generalizes CNOT/Toffoli to *any*
+number of controls — flip the target iff **every** control is set — and **`mcz`**
+does the same for a phase flip. (`ccz` is just a two-control `mcz`.) These show
+up everywhere from Grover's diffusion operator to arithmetic circuits.
+
+```rust
+let mut c = Circuit::new(4);
+c.x(0).x(1).x(2).mcx(&[0, 1, 2], 3); // 3 controls -> |0111> -> |1111>
+```
+
+A "single" multi-controlled gate is convenient to write but *very* expensive on
+hardware: it has no native form and decomposes into a cascade of Toffolis and
+two-qubit gates (Lesson 24). Handy to think with; costly to run.
+
 ## What you'll see
 
 ```
@@ -88,6 +103,9 @@ CCX   |011> -> |111>  (both controls 1 -> flip target q2):
 
 CSWAP |011> -> |101>  (control q0=1 -> swap q1 and q2):
   |101>   1000  100.0%  ########################################
+
+MCX   |0111> -> |1111>  (3 controls all set -> flip q3):
+  |1111>  1000  100.0%  ########################################
 ```
 
 Each gate lands the input on exactly the output its rule predicts.
@@ -102,6 +120,9 @@ Each gate lands the input on exactly the output its rule predicts.
    bit and a CNOT for the sum. Verify all four input combinations.
 4. Transpile a Toffoli and a Fredkin (Lesson 24) and compare gate counts — a
    "single" three-qubit gate is far from free on real hardware.
+5. Build an `mcz` over 3 controls, sandwich it in Hadamards on all qubits, and
+   watch it flip the sign of just the all-ones amplitude — that's the heart of
+   Grover's diffusion (Lesson 10). Transpile it and count the two-qubit gates.
 
 ## Key takeaway
 
