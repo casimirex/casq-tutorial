@@ -23,7 +23,8 @@ casimirQ transpiles to the basis `{rz, ry, cx}`:
 - Any *singly-controlled* gate — `cx`, `cy`, `cz`, `ch`, `cp`, `crx`/`cry`/`crz`,
   or an arbitrary controlled-U — decomposes into two `cx` plus rotations (the
   standard "ABC" identity). `cx` and `cz` keep hand-optimized fast paths.
-- `swap` and the Toffoli decompose into `cx` + rotations.
+- `swap`, the Toffoli, and `cswap` (Fredkin) decompose into `cx` + rotations —
+  in fact *any* multi-controlled gate does, so nothing comes back `unsupported`.
 
 Controlled-**phase** matters especially: it's the building block of the Quantum
 Fourier Transform (Lesson 10). Because the transpiler decomposes `cp`, a full
@@ -145,9 +146,10 @@ not the last word (it's not guaranteed optimal), which is why it's opt-in.
    entangles distant qubits, so routing on a line is expensive. Then try an
    explicit `TranspileOptions::coupling(...)` map (e.g. a ring) and see the SWAP
    count change with the topology.
-4. Transpile a circuit with a `cswap` (Fredkin) gate. It still comes back
-   `fully_native: false` with `cswap` in `unsupported` — controlled-SWAP and
-   multi-controlled gates beyond the Toffoli are the transpiler's next frontier.
+4. Transpile a circuit with a `cswap` (Fredkin) gate. It comes back
+   `fully_native: true` — cswap decomposes into `CX·CCX·CX`, and the Toffoli
+   into rotations + `cx`. Count the gates: a single "swap if" is surprisingly
+   expensive on real hardware.
 5. Compare `transpiled_gate_count` for a circuit of Hadamards vs the same number
    of `cx` gates. Which "costs" more to run natively, and why?
 
