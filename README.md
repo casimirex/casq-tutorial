@@ -50,7 +50,7 @@ Each lesson is a Cargo example. Run any of them by name:
 
 ```bash
 cargo run --example 01_hello_quantum
-cargo run --example 09_grover
+cargo run --example 10_grover
 # ...
 ```
 
@@ -73,45 +73,40 @@ code lives in [`examples/`](./examples).
 | --- | --- | --- | --- |
 | 4 | [Entanglement: Bell states](lessons/04-bell-state.md) | `04_bell_state` | Two-qubit entanglement and correlations |
 | 5 | [GHZ & multi-qubit entanglement](lessons/05-ghz-state.md) | `05_ghz_state` | Scaling entanglement to n qubits |
-| 6 | [Engines & scaling](lessons/06-engines.md) | `06_engines` | Statevector vs. Clifford, when to use which |
+| 6 | [Multi-qubit gates](lessons/06-multi-qubit-gates.md) | `06_multi_qubit_gates` | CNOT, CZ, SWAP, Toffoli, Fredkin — the coupling gates that build entanglement and logic |
+| 7 | [Engines & scaling](lessons/07-engines.md) | `07_engines` | Statevector vs. Clifford, when to use which |
 
 ### Part III — Quantum algorithms (advancing)
 
 | # | Lesson | Example | You'll learn |
 | --- | --- | --- | --- |
-| 7 | [Quantum RNG](lessons/07-qrng.md) | `07_qrng` | Turning superposition into real randomness |
-| 8 | [Deutsch–Jozsa](lessons/08-deutsch-jozsa.md) | `08_deutsch_jozsa` | Oracles and the first quantum advantage |
-| 9 | [Grover's search](lessons/09-grover.md) | `09_grover` | Quadratic speedup for unstructured search |
-| 10 | [Quantum Fourier Transform](lessons/10-qft.md) | `10_qft` | The transform behind phase estimation |
-| 11 | [Shor's algorithm](lessons/11-shor.md) | `11_shor` | Factoring and its impact on cryptography |
-| 12 | [Quantum teleportation](lessons/12-teleportation.md) | `12_teleportation` | Moving states with entanglement + classical bits |
+| 8 | [Quantum RNG](lessons/08-qrng.md) | `08_qrng` | Turning superposition into real randomness |
+| 9 | [Deutsch–Jozsa](lessons/09-deutsch-jozsa.md) | `09_deutsch_jozsa` | Oracles and the first quantum advantage |
+| 10 | [Grover's search](lessons/10-grover.md) | `10_grover` | Quadratic speedup for unstructured search |
+| 11 | [Quantum Fourier Transform](lessons/11-qft.md) | `11_qft` | The transform behind phase estimation |
+| 12 | [Shor's algorithm](lessons/12-shor.md) | `12_shor` | Factoring and its impact on cryptography |
+| 13 | [Quantum teleportation](lessons/13-teleportation.md) | `13_teleportation` | Moving states with entanglement + classical bits |
 
 ### Part IV — Applied & variational (professional)
 
 | # | Lesson | Example | You'll learn |
 | --- | --- | --- | --- |
-| 13 | [VQE](lessons/13-vqe.md) | `13_vqe` | Hybrid algorithms for quantum chemistry |
-| 14 | [QAOA](lessons/14-qaoa.md) | `14_qaoa` | Near-term quantum optimization (MaxCut) |
-| 15 | [Capstone: your first quantum app](lessons/15-capstone.md) | `15_capstone` | Circuits + persistence + algorithms, end to end |
+| 14 | [VQE](lessons/14-vqe.md) | `14_vqe` | Hybrid algorithms for quantum chemistry |
+| 15 | [QAOA](lessons/15-qaoa.md) | `15_qaoa` | Near-term quantum optimization (MaxCut) |
+| 16 | [Capstone: your first quantum app](lessons/16-capstone.md) | `16_capstone` | Circuits + persistence + algorithms, end to end |
 
 ### Part V — Advanced & real-world (expert)
 
 | # | Lesson | Example | You'll learn |
 | --- | --- | --- | --- |
-| 16 | [Quantum machine learning](lessons/16-quantum-ml.md) | `16_quantum_ml` | Quantum kernels (QSVM) and variational models |
-| 17 | [Quantum error correction](lessons/17-error-correction.md) | `17_error_correction` | Steane/Shor codes, syndromes, logical qubits |
-| 18 | [Noise & the NISQ reality](lessons/18-noise.md) | `18_noise` | Noise channels, device T1/T2, why circuits stay shallow |
-| 19 | [BB84 quantum key distribution](lessons/19-bb84.md) | `19_bb84` | Detectable eavesdropping and quantum-secure keys |
-| 20 | [Simulating noise (density matrix)](lessons/20-noise-simulation.md) | `20_noise_simulation` | Run circuits under noise; purity & fidelity |
-| 21 | [Choosing a backend](lessons/21-backends.md) | `21_backends` | Run the same circuit on simulators vs an emulated QPU |
-| 22 | [Asynchronous execution](lessons/22-async-jobs.md) | `22_async_jobs` | Submit jobs, poll to completion, target any backend |
-| 23 | [Transpilation](lessons/23-transpilation.md) | `23_transpilation` | Decompose circuits to a native gate basis; the gate-count cost |
-
-### Reference
-
-| # | Lesson | Example | You'll learn |
-| --- | --- | --- | --- |
-| 24 | [Multi-qubit gates](lessons/24-multi-qubit-gates.md) | `24_multi_qubit_gates` | CNOT, CZ, SWAP, Toffoli, Fredkin — the coupling gates in one place (companion to Lesson 3) |
+| 17 | [Quantum machine learning](lessons/17-quantum-ml.md) | `17_quantum_ml` | Quantum kernels (QSVM) and variational models |
+| 18 | [Quantum error correction](lessons/18-error-correction.md) | `18_error_correction` | Steane/Shor codes, syndromes, logical qubits |
+| 19 | [Noise & the NISQ reality](lessons/19-noise.md) | `19_noise` | Noise channels, device T1/T2, why circuits stay shallow |
+| 20 | [BB84 quantum key distribution](lessons/20-bb84.md) | `20_bb84` | Detectable eavesdropping and quantum-secure keys |
+| 21 | [Simulating noise (density matrix)](lessons/21-noise-simulation.md) | `21_noise_simulation` | Run circuits under noise; purity & fidelity |
+| 22 | [Choosing a backend](lessons/22-backends.md) | `22_backends` | Run the same circuit on simulators vs an emulated QPU |
+| 23 | [Asynchronous execution](lessons/23-async-jobs.md) | `23_async_jobs` | Submit jobs, poll to completion, target any backend |
+| 24 | [Transpilation](lessons/24-transpilation.md) | `24_transpilation` | Decompose circuits to a native gate basis; the gate-count cost |
 
 ## A one-minute concepts primer
 

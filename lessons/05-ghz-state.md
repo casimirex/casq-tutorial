@@ -64,4 +64,4 @@ Only all-0 and all-1 states appear: true
 Complex entangled states are built by composing simple gate patterns in loops.
 The GHZ ladder is a reusable building block.
 
-Next: [Lesson 6 — Engines & scaling](06-engines.md)
+Next: [Lesson 6 — Multi-qubit gates](06-multi-qubit-gates.md)
