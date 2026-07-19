@@ -66,16 +66,59 @@ Toffoli, a single 3-qubit gate, explodes into ~20 native operations. And the QFT
 `cp` was decomposed into `cx` + rotations. That is the real cost hardware pays
 for a "simple" gate.
 
+## Half of the story: connectivity
+
+Decomposing to the native *gates* is only half of fitting a circuit to
+hardware. The other half is **connectivity**: a real device only runs a
+two-qubit gate between qubits that are physically wired together. The emulated
+QPU from Lesson 21 has **linear** connectivity — a line `0—1—2—…` — so a gate
+between qubits 0 and 2 simply can't run as written.
+
+**Routing** fixes this by inserting SWAP gates to shuffle qubits until the two
+operands are neighbors. `transpile_with` routes onto a connectivity and tells
+you what it did:
+
+```rust
+use casq_sdk::{Connectivity, TranspileOptions};
+
+let mut c = Circuit::new(3);
+c.h(0).cx(0, 2);   // 0 and 2 aren't adjacent on a line
+
+let t = client
+    .transpile_with(&c, TranspileOptions::connectivity(Connectivity::Linear))
+    .await?;
+println!("inserted {} SWAP(s)", t.swap_count.unwrap());
+println!("layout: {:?}", t.final_permutation.unwrap());  // logical -> physical
+```
+
+```
+Routing cx(0,2) onto a linear device 0—1—2:
+  inserted 1 SWAP(s)
+  final layout (logical -> physical): [0, 2, 1]
+  every 2-qubit gate is now between neighbors, still native: true
+```
+
+Two things to notice. First, routing **isn't free** — each SWAP is three more
+`cx` gates, piling onto the gate-count problem above. Minimizing SWAPs is a
+whole research area. Second, routing **permutes your qubits**: the
+`final_permutation` says logical qubit 2 now lives on physical wire 1. When you
+read a measurement, you look up each logical qubit's bit at
+`final_permutation[logical]` — the SDK reports the layout so you always can.
+
 ## Try it yourself
 
 1. Transpile a GHZ preset. How does the native gate count scale with the number
    of qubits?
 2. Build a larger QFT (4–5 qubits) and transpile it. Count the `cx` gates — this
    is exactly the two-qubit-gate budget that limits QFT depth on real hardware.
-3. Transpile a circuit with a `cswap` (Fredkin) gate. It still comes back
+3. Route that QFT onto `Connectivity::Linear` and compare `swap_count` — the QFT
+   entangles distant qubits, so routing on a line is expensive. Then try an
+   explicit `TranspileOptions::coupling(...)` map (e.g. a ring) and see the SWAP
+   count change with the topology.
+4. Transpile a circuit with a `cswap` (Fredkin) gate. It still comes back
    `fully_native: false` with `cswap` in `unsupported` — controlled-SWAP and
    multi-controlled gates beyond the Toffoli are the transpiler's next frontier.
-4. Compare `transpiled_gate_count` for a circuit of Hadamards vs the same number
+5. Compare `transpiled_gate_count` for a circuit of Hadamards vs the same number
    of `cx` gates. Which "costs" more to run natively, and why?
 
 ## Key takeaway

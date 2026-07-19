@@ -50,8 +50,23 @@ async fn main() -> casq_sdk::Result<()> {
     println!("  {} gates -> {} native gates {:?}", t.original_gate_count, t.transpiled_gate_count, gate_histogram(&t));
     println!("  fully native: {}   (controlled-phase decomposed to rz/ry/cx)", t.fully_native);
 
+    // Routing: a real device only couples *neighboring* qubits. On a line
+    // 0—1—2, a gate between 0 and 2 can't run as written — routing inserts a
+    // SWAP to bring them adjacent, and reports where each qubit ended up.
+    use casq_sdk::{Connectivity, TranspileOptions};
+    let mut wide = Circuit::new(3);
+    wide.h(0).cx(0, 2); // 0 and 2 are not adjacent on a line
+    let t = client
+        .transpile_with(&wide, TranspileOptions::connectivity(Connectivity::Linear))
+        .await?;
+    println!("\nRouting cx(0,2) onto a linear device 0—1—2:");
+    println!("  inserted {} SWAP(s)", t.swap_count.unwrap_or(0));
+    println!("  final layout (logical -> physical): {:?}", t.final_permutation.unwrap_or_default());
+    println!("  every 2-qubit gate is now between neighbors, still native: {}", t.fully_native);
+
     println!("\nThe rewrite is exact but costs gates — one Toffoli becomes ~20 native");
-    println!("operations. On noisy hardware, that gate-count blow-up is the enemy.");
+    println!("operations, and routing adds SWAPs on top. On noisy hardware, that");
+    println!("gate-count blow-up is the enemy.");
     Ok(())
 }
 
