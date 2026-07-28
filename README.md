@@ -107,6 +107,7 @@ code lives in [`examples/`](./examples).
 | 22 | [Choosing a backend](lessons/22-backends.md) | `22_backends` | Run the same circuit on simulators vs an emulated QPU |
 | 23 | [Asynchronous execution](lessons/23-async-jobs.md) | `23_async_jobs` | Submit jobs, poll to completion, target any backend |
 | 24 | [Transpilation](lessons/24-transpilation.md) | `24_transpilation` | Decompose circuits to a native gate basis; the gate-count cost |
+| 25 | [The Circuit Library](lessons/25-circuit-library.md) | `25_circuit_library` | The 53 building-block circuits, controlled rotations (`crx/cry/crz`), and the swap test |
 
 ## A one-minute concepts primer
 
