@@ -8,6 +8,7 @@
 //! Two landmark codes:
 //!   - Steane: 7 physical qubits per logical qubit, distance 3.
 //!   - Shor:   9 physical qubits per logical qubit, distance 3.
+//!
 //! A distance-3 code can correct any single-qubit error.
 
 use casq_tutorial::connect;

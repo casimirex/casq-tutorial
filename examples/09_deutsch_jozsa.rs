@@ -73,7 +73,7 @@ async fn main() -> casq_sdk::Result<()> {
         let inputs_all_zero = (0..n).all(|q| qubit_bit(&bitstring, q) == Some('0'));
         let verdict = if inputs_all_zero { "CONSTANT" } else { "BALANCED" };
 
-        println!("oracle: {label:<22} -> input register {} => {verdict}", &bitstring);
+        println!("oracle: {label:<22} -> input register {} => {verdict}", bitstring);
     }
 
     println!("\nOne query each — no classical algorithm can do that with certainty.");
