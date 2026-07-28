@@ -56,6 +56,20 @@ let mut c = Circuit::new(2);
 c.x(0).ch(0, 1);          // q1 becomes 50/50 -> |01> and |11>
 ```
 
+## Controlled-Y and CCZ
+
+`cy` is CNOT's cousin — it applies **Y** (a flip *and* a phase) to the target
+when the control is set. `ccz` phase-flips only when **both** controls are `|1>`;
+like CZ its effect is a phase, made visible with a Hadamard sandwich:
+
+```rust
+let mut c = Circuit::new(2);
+c.x(0).cy(0, 1);                    // control 1 -> Y on q1 -> |11>
+
+let mut z = Circuit::new(3);
+z.x(0).x(1).h(2).ccz(0, 1, 2).h(2); // both controls 1 -> q2 reads 1
+```
+
 ## A subroutine: the swap test
 
 Building blocks compose into *subroutines* that show up inside bigger algorithms.
@@ -83,6 +97,12 @@ CRZ(pi)  kickback with control q0=1 -> q1 reads 1  (|11>):
 CH       control q0=1 -> H on q1 -> 50/50 over |01>,|11>:
   |11>     506   50.6%  ########################################
   |01>     494   49.4%  #######################################
+
+CY       control q0=1 -> Y on q1 -> |11>:
+  |11>    1000  100.0%  ########################################
+
+CCZ      both controls 1 -> phase-flip -> q2 reads 1  (|111>):
+  |111>    1000  100.0%  ########################################
 
 SWAP TEST  identical inputs -> |000|, ancilla q0 = 0 (states match):
   |000>    1000  100.0%  ########################################

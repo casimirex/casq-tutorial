@@ -64,6 +64,19 @@ async fn main() -> casq_sdk::Result<()> {
     ch.x(0).ch(0, 1);
     show!("CH       control q0=1 -> H on q1 -> 50/50 over |01>,|11>:", ch);
 
+    // --- Controlled-Y: like CNOT, but applies Y (a flip *and* a phase) ---
+    // With q0=1, cy applies Y to q1: Y|0> = i|1>, so the target flips to |1>.
+    let mut cy = Circuit::new(2);
+    cy.x(0).cy(0, 1);
+    show!("CY       control q0=1 -> Y on q1 -> |11>:", cy);
+
+    // --- CCZ: phase-flip when both controls are set, made visible by kickback ---
+    // With both controls |1> and the target in |+>, CCZ acts as a Z on the
+    // target (|+> -> |->); a final H turns that into q2 reading 1.
+    let mut ccz = Circuit::new(3);
+    ccz.x(0).x(1).h(2).ccz(0, 1, 2).h(2);
+    show!("CCZ      both controls 1 -> phase-flip -> q2 reads 1  (|111>):", ccz);
+
     // --- A subroutine: the swap test (are two states equal?) ---
     // Ancilla q0 controls a swap of q1 and q2, sandwiched by Hadamards. If the
     // two states are identical the interference is perfect and the ancilla
